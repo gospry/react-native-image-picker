@@ -1,5 +1,33 @@
 import groovy.json.JsonSlurper
 
+def _ext = rootProject.ext
+
+/* 
+    If you want to change this properties, just put them on your android/buil.gradle like this:
+    buildscript {
+        ...
+    }
+    ext {
+        versionCode = 13
+        versionName = "1.9.3"
+        compileSdkVersion = 26
+        minSdkVersion = 16
+        targetSdkVersion = 23
+        buildToolsVersion = "26.0.2"
+        supportLibVersion = "26.0.2"
+        googlePlayServicesVersion = "11.4.2"
+    }
+    allprojects {
+        ...
+    }
+*/
+
+def _reactNativeVersion = _ext.has('reactNative') ? _ext.reactNative : '+'
+def _compileSdkVersion = _ext.has('compileSdkVersion') ? _ext.compileSdkVersion : 25
+def _buildToolsVersion = _ext.has('buildToolsVersion') ? _ext.buildToolsVersion : '25.0.2'
+def _minSdkVersion = _ext.has('minSdkVersion') ? _ext.minSdkVersion : 16
+def _targetSdkVersion = _ext.has('targetSdkVersion') ? _ext.targetSdkVersion : 25
+
 def computeVersionName() {
     // dynamically retrieve version from package.json
     def slurper = new JsonSlurper()
@@ -20,12 +48,12 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion _compileSdkVersion
+    buildToolsVersion _buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 25
+        minSdkVersion _minSdkVersion
+        targetSdkVersion _targetSdkVersion
         versionCode 1
         versionName computeVersionName()
     }
@@ -45,7 +73,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.facebook.react:react-native:+"  // From node_modules
+    compile "com.facebook.react:react-native:${_reactNativeVersion}"  // From node_modules
     
     testCompile "junit:junit:4.10"
     testCompile "org.assertj:assertj-core:1.7.0"
